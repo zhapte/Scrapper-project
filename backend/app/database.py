@@ -20,3 +20,10 @@ SessionLocal = sessionmaker(
 
 class Base(DeclarativeBase):
     pass
+
+if __name__ == "__main__":
+    try:
+        with engine.connect() as connection:
+            print("Connected to your PostgreSQL database.")
+    except Exception as e:
+        print(f"Connection failed!\nError: {e}")
