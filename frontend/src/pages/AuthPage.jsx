@@ -13,7 +13,7 @@ const initialRegistrationForm = {
   password: '',
 }
 
-function AuthPage() {
+function AuthPage({ onAuthenticated }) {
   const [mode, setMode] = useState('login')
   const [loginForm, setLoginForm] = useState(initialLoginForm)
   const [registrationForm, setRegistrationForm] = useState(
@@ -40,6 +40,12 @@ function AuthPage() {
 
   function handleSubmit(event) {
     event.preventDefault()
+    const formData = isLogin ? loginForm : registrationForm
+
+    onAuthenticated({
+      firstName: formData.firstName || 'User',
+      email: formData.email,
+    })
   }
 
   return (

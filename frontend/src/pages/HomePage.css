@@ -1,0 +1,48 @@
+.home-page {
+  box-sizing: border-box;
+  min-height: 100svh;
+  padding: 24px;
+}
+
+.home-header {
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 16px;
+}
+
+.home-header p,
+.home-header h1,
+.home-content h2,
+.home-content p {
+  margin: 0;
+}
+
+.home-header p,
+.home-content p {
+  color: #555;
+}
+
+.home-header h1 {
+  font-size: 32px;
+}
+
+.home-header button {
+  background: #111;
+  border: 1px solid #111;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 12px;
+}
+
+.home-content {
+  padding-top: 24px;
+}
+
+.home-content h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
