@@ -6,6 +6,7 @@ from app.database import Base
 from app.database import engine
 from app.database import SessionLocal
 from app.models import Product
+from app.models import User
 
 import app.models
 
