@@ -5,12 +5,11 @@ from fastapi import Depends
 from app.database import Base
 from app.database import engine
 from app.database import SessionLocal
-from app.models import Product
-from app.models import User
+
+from app.models import Product, User, Favorite
 
 import app.models
 
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -28,33 +27,24 @@ def get_db():
 def home():
     return {"message": "server running"}
 
-
-@app.post("/seed-products")
-def seed_products(db: Session = Depends(get_db)):
-    products = [
-        Product(
-            name="AirPods Pro",
-            url="https://example.com/airpods"
-        ),
-        Product(
-            name="Nintendo Switch",
-            url="https://example.com/switch"
-        ),
-        Product(
-            name="Gaming Monitor",
-            url="https://example.com/monitor"
-        )
-    ]
-
-    db.add_all(products)
-    db.commit()
-
-    return {
-        "message": "Dummy products added",
-        "count": len(products)
-    }
-
+@app.get("/users")
+def get_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
 
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
     return db.query(Product).all()
+
+@app.get("/favorites")
+def get_favorites(db: Session = Depends(get_db)):
+    return db.query(Favorite).all()
+
+@app.get("/scrape-list")
+def scrape_list(db: Session = Depends(get_db)):
+    return (
+        db.query(Product)
+        .join(Favorite, Product.product_id == Favorite.product_id)
+        .filter(Favorite.notify_enabled == True)
+        .distinct()
+        .all()
+    )
