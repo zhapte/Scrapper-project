@@ -6,4 +6,5 @@ bcrypt
 email-validator
 PyJWT
 alembic
+psycopg[binary]
 
