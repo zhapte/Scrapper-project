@@ -14,8 +14,14 @@ async def scrape_amazon(url:str) -> str :
         
         await page.goto(url)
         await page.wait_for_timeout(3000)
-        await page.locator("button[type='submit']").click()
-        await page.wait_for_timeout(3000)
+        submit_button = page.locator("button[type='submit']")
+
+        if await submit_button.count() > 0:
+            print("Captcha page detected")
+            await submit_button.click()
+            await page.wait_for_timeout(3000)
+        else:
+            print("Product page detected")
 
         html = await page.content()
 
