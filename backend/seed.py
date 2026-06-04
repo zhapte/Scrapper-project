@@ -1,6 +1,7 @@
 from app.database import SessionLocal
 from app.models import User, Product, Favorite
 from sqlalchemy import text
+from app.auth.security import hash_password
 
 def seed_database():
     db = SessionLocal()
@@ -22,14 +23,14 @@ def seed_database():
             first_name="John",
             last_name="Doe",
             email="john@example.com",
-            password="password123"
+            password=hash_password("password123")
         )
 
         user2 = User(
             first_name="Wei",
             last_name="Zhang",
             email="wei@example.com",
-            password="password123"
+            password=hash_password("password123")
         )
 
         db.add_all([user1, user2])
