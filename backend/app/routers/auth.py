@@ -1,0 +1,116 @@
+from uuid import UUID
+
+import jwt
+from fastapi import APIRouter
+from fastapi import Depends
+from fastapi import HTTPException
+from fastapi import status
+from fastapi.security import HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer
+from sqlalchemy.orm import Session
+
+from app.auth.security import hash_password
+from app.auth.security import verify_password
+from app.auth.tokens import create_access_token
+from app.auth.tokens import decode_access_token
+from app.dependencies import get_db
+from app.models import User
+from app.schemas import TokenResponse
+from app.schemas import UserCreate
+from app.schemas import UserLogin
+from app.schemas import UserResponse
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+bearer_scheme = HTTPBearer()
+
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    db: Session = Depends(get_db),
+) -> User:
+    credentials_error = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = decode_access_token(credentials.credentials)
+        user_id = payload.get("sub")
+    except jwt.PyJWTError as exc:
+        raise credentials_error from exc
+
+    if not user_id:
+        raise credentials_error
+
+    user = db.query(User).filter(User.user_id == UUID(user_id)).first()
+
+    if not user:
+        raise credentials_error
+
+    return user
+
+
+@router.post(
+    "/register",
+    response_model=TokenResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def register_user(
+    user_data: UserCreate,
+    db: Session = Depends(get_db),
+):
+    existing_user = db.query(User).filter(User.email == user_data.email).first()
+
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is already registered",
+        )
+
+    user = User(
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
+        email=user_data.email,
+        password=hash_password(user_data.password),
+    )
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    access_token = create_access_token(str(user.user_id))
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user,
+    }
+
+
+@router.post("/login", response_model=TokenResponse)
+def login_user(
+    user_data: UserLogin,
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.email == user_data.email).first()
+
+    if not user or not verify_password(user_data.password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = create_access_token(str(user.user_id))
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user,
+    }
+
+
+@router.get("/me", response_model=UserResponse)
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user

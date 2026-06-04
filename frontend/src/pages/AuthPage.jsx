@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { loginUser, registerUser } from '../api/auth.js'
 import './AuthPage.css'
 
 const initialLoginForm = {
@@ -19,6 +20,8 @@ function AuthPage({ onAuthenticated }) {
   const [registrationForm, setRegistrationForm] = useState(
     initialRegistrationForm,
   )
+  const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isLogin = mode === 'login'
 
@@ -38,14 +41,27 @@ function AuthPage({ onAuthenticated }) {
     }))
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    const formData = isLogin ? loginForm : registrationForm
+    setErrorMessage('')
+    setIsSubmitting(true)
 
-    onAuthenticated({
-      firstName: formData.firstName || 'User',
-      email: formData.email,
-    })
+    try {
+      const authData = isLogin
+        ? await loginUser(loginForm)
+        : await registerUser({
+            first_name: registrationForm.firstName,
+            last_name: registrationForm.lastName,
+            email: registrationForm.email,
+            password: registrationForm.password,
+          })
+
+      onAuthenticated(authData)
+    } catch (error) {
+      setErrorMessage(error.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -73,6 +89,8 @@ function AuthPage({ onAuthenticated }) {
           </button>
         </div>
 
+        {errorMessage && <p className="auth-error">{errorMessage}</p>}
+
         {isLogin ? (
           <form className="auth-form" onSubmit={handleSubmit}>
             <label>
@@ -99,7 +117,9 @@ function AuthPage({ onAuthenticated }) {
               />
             </label>
 
-            <button type="submit">Login</button>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Logging in...' : 'Login'}
+            </button>
           </form>
         ) : (
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -151,7 +171,9 @@ function AuthPage({ onAuthenticated }) {
               />
             </label>
 
-            <button type="submit">Register</button>
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Registering...' : 'Register'}
+            </button>
           </form>
         )}
       </section>

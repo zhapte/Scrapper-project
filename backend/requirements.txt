@@ -3,5 +3,7 @@ sqlalchemy
 python-dotenv
 psycopg2-binary
 bcrypt
+email-validator
+PyJWT
 alembic
 
