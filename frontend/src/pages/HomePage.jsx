@@ -14,7 +14,7 @@ function HomePage({ user, onLogout }) {
       </header>
 
       <section className="home-content">
-        <h2>Welcome, {user.firstName}</h2>
+        <h2>Welcome, {user.first_name}</h2>
         <p>{user.email}</p>
       </section>
     </main>
