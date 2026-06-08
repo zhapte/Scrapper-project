@@ -46,3 +46,55 @@
   font-size: 24px;
   margin-bottom: 8px;
 }
+
+.api-test-panel {
+  border-top: 1px solid #ddd;
+  margin-top: 24px;
+  padding-top: 24px;
+}
+
+.api-test-panel h2 {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.api-test-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.api-test-actions button {
+  background: #fff;
+  border: 1px solid #222;
+  border-radius: 4px;
+  color: #111;
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 12px;
+}
+
+.api-test-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.api-test-status,
+.api-test-error {
+  margin: 16px 0 0;
+}
+
+.api-test-error {
+  color: #b00020;
+}
+
+.api-test-output {
+  background: #111;
+  border-radius: 4px;
+  color: #fff;
+  margin: 16px 0 0;
+  max-height: 360px;
+  overflow: auto;
+  padding: 16px;
+  white-space: pre-wrap;
+}

@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi import Depends
+from fastapi import Security
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -40,7 +41,7 @@ def home():
 @app.post("/seed-products")
 def seed_products(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Security(get_current_user),
 ):
     products = [
         Product(
@@ -69,6 +70,6 @@ def seed_products(
 @app.get("/products")
 def get_products(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Security(get_current_user),
 ):
     return db.query(Product).all()
