@@ -45,6 +45,20 @@ export async function loginUser(credentials) {
   })
 }
 
+export async function requestPasswordReset(passwordResetRequest) {
+  return request('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify(passwordResetRequest),
+  })
+}
+
+export async function resetPassword(passwordResetData) {
+  return request('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify(passwordResetData),
+  })
+}
+
 export async function getCurrentUser(token) {
   return request('/auth/me', {
     headers: {

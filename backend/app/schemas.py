@@ -16,6 +16,19 @@ class UserLogin(BaseModel):
     password: str
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ForgotPasswordResponse(BaseModel):
+    message: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    password: str
+
+
 class UserResponse(BaseModel):
     user_id: UUID
     first_name: str

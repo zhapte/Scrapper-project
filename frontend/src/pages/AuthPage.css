@@ -90,3 +90,19 @@
   margin: 0 0 14px;
   text-align: left;
 }
+
+.auth-success {
+  color: #116329;
+  margin: 0 0 14px;
+  text-align: left;
+}
+
+.auth-form .auth-link-button {
+  background: transparent;
+  border: none;
+  color: #111;
+  margin-top: 0;
+  padding: 0;
+  text-align: left;
+  text-decoration: underline;
+}
