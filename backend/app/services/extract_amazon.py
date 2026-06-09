@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 from decimal import Decimal
-from urllib.parse import urlparse
 import re
 
 def extract_amazon_product_info(product_html:str, product_url:str) -> dict:
@@ -39,7 +38,7 @@ def extract_amazon_product_info(product_html:str, product_url:str) -> dict:
 
 
 def extract_asin(url: str) -> str | None:
-    match = re.search(r"/dp/([A-Z0-9]{10})", url)
+    match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", url)
     if match:
         return match.group(1)
     return None
