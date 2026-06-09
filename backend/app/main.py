@@ -2,12 +2,12 @@ import os
 
 from fastapi import FastAPI
 from fastapi import Depends
+from fastapi import Security
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from app.database import Base
 from app.database import engine
-from app.database import SessionLocal
 
 from app.dependencies import get_db
 
@@ -43,10 +43,61 @@ def home():
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
 
+@app.post("/seed-products")
+def seed_products(
+    db: Session = Depends(get_db),
+    current_user: User = Security(get_current_user),
+):
+    product_data = [
+        {
+            "amazon_asin": "B0D1XD1ZV3",
+            "name": "AirPods Pro",
+            "description": "Wireless earbuds with active noise cancellation.",
+            "current_price": 249.00,
+            "product_url": "https://example.com/airpods",
+        },
+        {
+            "amazon_asin": "B0B8J4X76B",
+            "name": "Nintendo Switch",
+            "description": "Portable Nintendo game console.",
+            "current_price": 299.00,
+            "product_url": "https://example.com/switch",
+        },
+        {
+            "amazon_asin": "B09G9FPHY6",
+            "name": "Gaming Monitor",
+            "description": "High refresh rate gaming display.",
+            "current_price": 199.00,
+            "product_url": "https://example.com/monitor",
+        },
+    ]
+    added_count = 0
+
+    for product in product_data:
+        existing_product = (
+            db.query(Product)
+            .filter(Product.amazon_asin == product["amazon_asin"])
+            .first()
+        )
+
+        if existing_product:
+            continue
+
+        db.add(Product(**product))
+        added_count += 1
+
+    db.commit()
+
+    return {
+        "message": "Dummy products added",
+        "count": added_count,
+    }
+
+
 @app.get("/products")
 def get_products(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Security(get_current_user),
 ):
     return db.query(Product).all()
 
