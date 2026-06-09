@@ -1,15 +1,17 @@
 .home-page {
-  box-sizing: border-box;
   min-height: 100svh;
   padding: 24px;
 }
 
 .home-header {
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  background: var(--imperial-blue);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: var(--white);
   display: flex;
   justify-content: space-between;
-  padding-bottom: 16px;
+  padding: 22px 24px;
 }
 
 .home-header p,
@@ -19,41 +21,56 @@
   margin: 0;
 }
 
-.home-header p,
-.home-content p {
-  color: #555;
+.home-header p {
+  color: var(--pale-sky);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .home-header h1 {
   font-size: 32px;
+  line-height: 1.15;
+}
+
+.home-header button,
+.api-test-actions button {
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 9px 13px;
 }
 
 .home-header button {
-  background: #111;
-  border: 1px solid #111;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  font: inherit;
-  padding: 8px 12px;
+  background: var(--white);
+  border: 1px solid var(--white);
+  color: var(--imperial-blue);
 }
 
-.home-content {
-  padding-top: 24px;
+.home-content,
+.api-test-panel {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+  padding: 22px;
 }
 
 .home-content h2 {
+  color: var(--imperial-blue);
   font-size: 24px;
+  line-height: 1.2;
   margin-bottom: 8px;
 }
 
-.api-test-panel {
-  border-top: 1px solid #ddd;
-  margin-top: 24px;
-  padding-top: 24px;
+.home-content p {
+  color: var(--muted);
 }
 
 .api-test-panel h2 {
+  color: var(--imperial-blue);
   font-size: 20px;
   margin: 0 0 16px;
 }
@@ -61,17 +78,18 @@
 .api-test-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .api-test-actions button {
-  background: #fff;
-  border: 1px solid #222;
-  border-radius: 4px;
-  color: #111;
-  cursor: pointer;
-  font: inherit;
-  padding: 8px 12px;
+  background: var(--white);
+  border: 1px solid var(--ocean-deep);
+  color: var(--ocean-deep);
+}
+
+.api-test-actions button:hover:not(:disabled) {
+  background: var(--ocean-deep);
+  color: var(--white);
 }
 
 .api-test-actions button:disabled {
@@ -84,17 +102,45 @@
   margin: 16px 0 0;
 }
 
+.api-test-status {
+  color: var(--muted);
+}
+
 .api-test-error {
-  color: #b00020;
+  background: var(--danger-bg);
+  border-radius: 6px;
+  color: var(--danger);
+  padding: 10px 12px;
 }
 
 .api-test-output {
-  background: #111;
-  border-radius: 4px;
-  color: #fff;
+  background: var(--ink);
+  border-radius: 6px;
+  color: var(--white);
   margin: 16px 0 0;
   max-height: 360px;
   overflow: auto;
   padding: 16px;
   white-space: pre-wrap;
+}
+
+@media (max-width: 640px) {
+  .home-page {
+    padding: 16px;
+  }
+
+  .home-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .home-header button {
+    width: 100%;
+  }
+
+  .api-test-actions {
+    display: grid;
+  }
 }
