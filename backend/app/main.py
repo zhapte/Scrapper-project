@@ -14,6 +14,7 @@ from app.dependencies import get_db
 from app.models import Product, User, Favorite
 from app.routers.auth import get_current_user
 from app.routers.auth import router as auth_router
+from app.routers.favorites import router as favorites_router
 from app.routers.scrape import router as scrape_router
 
 import app.models
@@ -34,6 +35,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(scrape_router)
+app.include_router(favorites_router)
 
 @app.get("/")
 def home():
@@ -114,4 +116,3 @@ def scrape_list(db: Session = Depends(get_db)):
         .distinct()
         .all()
     )
-
